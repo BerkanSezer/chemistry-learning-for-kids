@@ -1,12 +1,18 @@
 <template>
-    <div>
-        <h1>Etkinlik 1</h1>
-        <div class="container">
+    <div class="container">
+        <header>
+            <h1>Etkinlik 1</h1>
+            <span class="info">
+                <BIconInfoCircle/>
+                Bu etkinlikte aşağıdaki pH değerkerini uygun maddelere göre yerleştiriniz.
+            </span>
+        </header>
+        <div>
             <!-- <div v-for="item in phValues" :key="item">
                 {{item}}
             </div> -->
-            <div class="col-md-12" style="height: 110px;">
-                <drop class="drop__menu" @drop="handleDrop(list, ...arguments)">
+            <div class="col-md-12" style="height: 110px; padding: 0;">
+                <drop class="drop__menu" @drop="handleDrop('inventory', list, ...arguments)">
                     <drag v-for="item in phValues" class="drag" :key="item" :data-value="item"
                         :transfer-data="{ item: item, list: phValues, example: 'lists' }">
                         {{ item }}
@@ -16,7 +22,7 @@
             <div class="row" id="dropable-row">
                 <div class="col-md-4" id="acid">
                     <h3>Asit</h3>
-                    <drop class="drop list" @drop="handleDrop(acids, ...arguments)">
+                    <drop class="drop list" @drop="handleDrop('acid', acids, ...arguments)">
                         <drag v-for="item in acids" class="drag" :key="item" :data-value="item"
                             :transfer-data="{ item: item, list: acids, example: 'lists' }">
                             {{ item }}
@@ -25,7 +31,7 @@
                 </div>
                 <div class="col-md-4" id="salt">
                     <h3>Tuz</h3>
-                    <drop class="drop list" @drop="handleDrop(salts, ...arguments)">
+                    <drop class="drop list" @drop="handleDrop('salt',salts, ...arguments )">
                         <drag v-for="item in salts" class="drag" :key="item" :data-value="item"
                             :transfer-data="{ item: item, list: salts, example: 'lists' }">
                             {{ item }}
@@ -34,7 +40,7 @@
                 </div>
                 <div class="col-md-4" id="base">
                     <h3>Baz</h3>
-                    <drop class="drop list" @drop="handleDrop(bases, ...arguments)">
+                    <drop class="drop list" @drop="handleDrop('base', bases, ...arguments)">
                         <drag v-for="item in bases" class="drag" :key="item" :data-value="item"
                             :transfer-data="{ item: item, list: bases, example: 'lists' }">
                             {{ item }}
@@ -53,18 +59,20 @@
         Drag,
         Drop
     } from 'vue-drag-drop';
+    import {BIconInfoCircle} from 'bootstrap-vue';
     export default {
         name: 'Practice1',
         components: {
             Drag,
-            Drop
+            Drop,
+            BIconInfoCircle
         },
         props: {
 
         },
         data() {
             return {
-                phValues: [1.2, 5.4, 7, 13.8, 7.5, 3, 9],
+                phValues: [1.2, 5.4, 7, 13.8, 7.5, 3, 9, 0, 4.3],
                 acids: [],
                 salts: [],
                 bases: [],
@@ -72,20 +80,41 @@
             }
         },
         created(){
-            this.showAlert();
+            // this.showAlert();
         },
         methods: {
             showAlert() {
             // Use sweetalert2
-            this.$swal('Hello Vue world!!!');
+                this.$swal('Hello Vue world!!!');
             },
-            handleDrop(toList, data) {
+            handleDrop(type = null, toList, data) {
                 const fromList = data.list;
-                if (fromList) {
+                let dropable = false
+                switch (type){
+                    case 'acid':
+                        if(data.item < 7){
+                            dropable = true
+                        }
+                        
+                    break;
+                    case 'salt':
+
+                    break;
+                    case 'base':
+                        if(data.item > 7){
+                            dropable = true
+                        }
+                    break;
+                }
+                if (dropable) {
                     toList.push(data.item);
                     fromList.splice(fromList.indexOf(data.item), 1);
                     toList.sort((a, b) => a > b);
+                }else{
+                    
+                    this.showAlert();
                 }
+                console.log(fromList, toList, type);
             },
         }
     }
@@ -100,7 +129,7 @@
         background-repeat: no-repeat;
     }
 </style>
-<style lang="scss" scoped>
+<style lang="scss">
     @import '../assets/scss/main';
     
     #dropable-row {

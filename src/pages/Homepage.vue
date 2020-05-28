@@ -2,8 +2,8 @@
     <div>
         <Welcome v-if="pageCounter === 3"/>
         <Video v-if="pageCounter === 2"/>
-        <Practice1 v-if="pageCounter === 1"/>
-        <Practice2 v-if="pageCounter === 4"/>
+        <Practice1 v-if="pageCounter === 4"/>
+        <Practice2 v-if="pageCounter === 1"/>
         <Practice3 v-if="pageCounter === 5"/>
         <footer>
             <button class="btn btn__black" v-if="pageCounter > 1" @click="pageCounter --;">Geri</button>
