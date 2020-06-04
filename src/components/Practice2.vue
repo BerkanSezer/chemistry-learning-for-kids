@@ -8,39 +8,20 @@
             </span>
         </header>
         <div class="row">
-            <!-- <div v-for="item in phValues" :key="item">
-                {{item}}
-            </div> -->
             <div class="col-md-12" style="padding: 0;">
-                <drop class="drop__menu" @drop="handleDrop('inventory', list, ...arguments)">
-                    <drag class="drag" :data-value="phIndex"
-                        :transfer-data="{ item: phValues[phIndex], list: phValues, example: 'lists' }">
-                        <div class="bottle"></div>
-                        <span style="font-size: 12px;">{{ phValues[phIndex].name }}</span>
+                <drop class="drop__menu" @drop="handleDrop(list, ...arguments)" drop-effect="copy">
+                    <drag class="drag" :data-value="shuffledItems" v-for="(item, index) in shuffledItems" :key="index"
+                        :transfer-data="{ item: item, list: shuffledItems, example: 'lists' }" drop-effect="copy">
+                        <img src="/bottle.webp" alt="Chemical Icon" width="100">
+                        <span style="font-size: 12px;">{{item.name }}<br>{{item.formula}}</span>
                     </drag>
                 </drop>
             </div>
             <div class="col-md-12" id="dropable-row">
-                    <div class="circle"></div>
-                    <div class="circle"></div>
-                <!-- <div class="col-md-6" id="acid">
-                    <h3>Asit</h3>
-                    <drop class="drop list" @drop="handleDrop('acid', acids, ...arguments)">
-                        <drag v-for="item in acids" class="drag" :key="item" :data-value="item"
-                            :transfer-data="{ item: item, list: acids, example: 'lists' }">
-                            {{ item }}
-                        </drag>
-                    </drop>
-                </div>
-                <div class="col-md-6" id="base">
-                    <h3>Baz</h3>
-                    <drop class="drop list" @drop="handleDrop('base', bases, ...arguments)">
-                        <drag v-for="item in bases" class="drag" :key="item" :data-value="item"
-                            :transfer-data="{ item: item, list: bases, example: 'lists' }">
-                            {{ item }}
-                        </drag>
-                    </drop>
-                </div> -->
+                <drop class="drop list" @drop="handleDrop(solved, ...arguments)" drop-effect="copy"
+                    @dragenter="waveHandler(...arguments, true)" @dragleave="waveHandler(...arguments, false)">
+                    <img src="/hand.png" alt="Hand Icon" width="300" id="hand">
+                </drop>
             </div>
 
         </div>
@@ -60,73 +41,240 @@
         },
         data() {
             return {
-                phValues: [{
-                        name: "PotasyumHG",
-                        value: 1.2
+                solved: [],
+                items: [{
+                        name: "Hidroklorikasit",
+                        formula: "(HCL)",
+                        type: "acit",
+                        action: "Temas Halinde Deriyi Yakar.",
                     },
                     {
-                        name: "PotasyumHG",
-                        value: 5.4
+                        name: "Nitrikrasit",
+                        formula: "(HNO3)",
+                        type: "acit",
+                        action: "Temas Halinde Deriyi Yakar.",
                     },
                     {
-                        name: "PotasyumHG",
-                        value: 7
+                        name: "Sülfürikasit",
+                        formula: "(H2SO4)",
+                        type: "acit",
+                        action: "Temas Halinde Deriyi Yakar.",
                     },
                     {
-                        name: "PotasyumHG",
-                        value: 13.8
+                        name: "Sodyumhidroksit",
+                        formula: "(NaOH)",
+                        type: "base",
+                        action: "Temas Halinde Kaşındırır.",
                     },
                     {
-                        name: "PotasyumHG",
-                        value: 7.5
+                        name: "Amonyak",
+                        formula: "(NH3)",
+                        type: "base",
+                        action: "Temas Halinde Zehirler.",
                     },
                     {
-                        name: "PotasyumHG",
-                        value: 3
+                        name: "Sodyumkarbonat",
+                        formula: "(Na2CO3)",
+                        type: "base",
+                        action: "Temas Halinde Tahriş Eder",
                     },
-                    {
-                        name: "PotasyumHG",
-                        value: 9
-                    },
-                    {
-                        name: "PotasyumHG",
-                        value: 0
-                    },
-                    {
-                        name: "PotasyumHG",
-                        value: 4.3
-                    },
-                ],
-                phIndex: 0
+                ]
             }
         },
+        methods: {
+            waveHandler(list, event, state) {
+                console.log(event.target);
+
+                if (state) {
+                    event.target.classList.add('wave');
+                } else {
+                    event.target.classList.remove('wave');
+                }
+
+            },
+            async handleDrop(toList, data) {
+                const isSuccess = await this.showAlert(data.item)
+                if (isSuccess) {
+                    toList.push(data.item);
+                    this.items.splice(this.items.indexOf(data.item), 1);
+                    toList.sort((a, b) => a > b);
+                    document.querySelector("#hand").classList.remove('wave');
+                }
+
+            },
+            async showAlert(item) {
+                return this.$swal({
+                    position: 'center',
+                    toast: false,
+                    timer: false,
+                    customClass: {
+                        confirmButton: 'btn btn-acit',
+                        cancelButton: 'btn btn-base'
+                    },
+                    title: `${item.name} ${item.formula} maddesi ${item.action}`,
+                    text: "Sence Bu nedir?",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Asit',
+                    cancelButtonText: 'Baz',
+                }).then(async res => {
+                    console.log(res);
+                    const type = res.value ? 'acit' : res.dismiss === 'cancel' ? 'base' : null;
+                    if (type === null) return false;
+                    if (type === item.type) {
+                        this.$swal({
+                            toast: false,
+                            position: 'center',
+                            icon: 'success',
+                            title: 'Tebrikler! Doğru Cevap',
+                            showConfirmButton: false,
+                            timer: 1000
+                        })
+                        return true
+                    }
+                    this.$swal({
+                        toast: false,
+                        position: 'center',
+                        icon: 'warning',
+                        title: 'I Ihh! Yanlış Cevap. Yeniden Kontol Et',
+                        showConfirmButton: false,
+                        timer: 1000
+                    })
+                    return false
+
+
+                });
+            }
+        },
+        computed: {
+            shuffledItems() {
+                return this.items
+            }
+        }
     }
 </script>
 <style lang="scss">
-    // body {
-    //     background: none;
-    //     background-color: black;
-    // }
-    .__practice2{
-        .bottle {
-        background-image: url("/bottle.webp");
-        background-size: cover;
-        width: 60px;
-        height: 60px;
+    @import "@/assets/scss/main";
+
+    .swal2-actions {
+        .btn {
+            width: calc(50% - 15px);
         }
-        .drag{
-                flex-direction: column;
-                background-color: transparent;
-            }
+
+        .btn-acit {
+            background: $pink !important;
+            outline: none !important;
+            border: none !important;
+        }
+
+        .btn-base {
+            background: $cyan !important;
+            outline: none !important;
+            border: none !important;
+        }
+
     }
-    #dropable-row{
+
+    .__practice2 {
+        .bottle {
+            background-image: url("/bottle.webp");
+            background-size: cover;
+            width: 60px;
+            height: 60px;
+        }
+
+        .drag {
+            flex-direction: column;
+            background-color: transparent;
+            margin: 20px 25px;
+        }
+
+        .drop__menu {
+            justify-content: space-between;
+            height: 200px;
+            margin-top: 30px;
+        }
+    }
+
+    #dropable-row {
         display: flex;
         justify-content: space-evenly;
-        .circle{
+
+        >.drop {
+            border: none;
+            padding: 0;
+        }
+
+        .circle {
             width: 200px;
             height: 200px;
             background-color: var(--blue);
             border-radius: 50%;
+        }
+
+        #hand {
+            &.wave {
+                // padding: 20px;
+                // position: absolute;
+                // top: 50%;
+                // left: 50%;
+                // margin: -70px 0 0 -70px;
+                -webkit-transform: rotate(-10deg);
+                -moz-transform: rotate(-10deg);
+                -o-transform: rotate(-10deg);
+                -ms-transform: rotate(-10deg);
+                transform: rotate(-20deg);
+                -webkit-animation: wink 0.5s alternate infinite;
+                -moz-animation: wink 0.5s alternate infinite;
+                -o-animation: wink 0.5s alternate infinite;
+                animation: wink 0.5s alternate infinite;
+                -webkit-transform-origin: 50% 100%;
+                -moz-transform-origin: 50% 100%;
+                -o-transform-origin: 50% 100%;
+                -ms-transform-origin: 50% 100%;
+                transform-origin: 50% 100%;
+                -webkit-animation-timing-function: ease;
+                animation-timing-function: ease;
+            }
+
+        }
+    }
+
+    /* Chrome, Safari, Opera */
+    @-webkit-keyframes wink {
+        0% {
+            -webkit-transform: rotate(-10deg);
+            -moz-transform: rotate(-10deg);
+            -o-transform: rotate(-10deg);
+            -ms-transform: rotate(-10deg);
+            transform: rotate(-10deg);
+        }
+
+        100% {
+            -webkit-transform: rotate(20deg);
+            -moz-transform: rotate(10deg);
+            -o-transform: rotate(10deg);
+            -ms-transform: rotate(10deg);
+            transform: rotate(10deg);
+        }
+    }
+
+    /* Standard syntax */
+    @keyframes wink {
+        0% {
+            -webkit-transform: rotate(-10deg);
+            -moz-transform: rotate(-10deg);
+            -o-transform: rotate(-10deg);
+            -ms-transform: rotate(-10deg);
+            transform: rotate(-10deg);
+        }
+
+        100% {
+            -webkit-transform: rotate(20deg);
+            -moz-transform: rotate(10deg);
+            -o-transform: rotate(10deg);
+            -ms-transform: rotate(10deg);
+            transform: rotate(10deg);
         }
     }
 </style>

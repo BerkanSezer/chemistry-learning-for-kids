@@ -146,16 +146,6 @@
                 height: 60vh;
             }
         }
-        #salt{
-            h3{
-                background-color: $teal;
-            }
-            > .list{
-                background-color: $teal;
-                width: 100%;
-                height: 60vh;
-            }
-        }
         #base{
             h3{
                 background-color: $cyan;
