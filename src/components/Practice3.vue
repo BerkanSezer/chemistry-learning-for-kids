@@ -1,5 +1,5 @@
 <template>
-    <div>Etkinlik 3</div>
+    <div>Degerlendirme</div>
 </template>
 <script>
 export default {

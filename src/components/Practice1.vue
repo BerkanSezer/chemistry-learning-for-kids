@@ -8,13 +8,10 @@
             </span>
         </header>
         <div>
-            <!-- <div v-for="item in phValues" :key="item">
-                {{item}}
-            </div> -->
             <div class="col-md-12" style="height: 110px; padding: 0;">
                 <drop class="drop__menu" @drop="handleDrop('inventory', list, ...arguments)">
-                    <drag v-for="item in phValues" class="drag" :key="item" :data-value="item"
-                        :transfer-data="{ item: item, list: phValues, example: 'lists' }">
+                    <drag v-for="item in shuffledArray" class="drag" :key="item" :data-value="item"
+                        :transfer-data="{ item: item, list: shuffledArray, example: 'lists' }">
                         {{ item }}
                     </drag>
                 </drop>
@@ -25,15 +22,6 @@
                     <drop class="drop list" @drop="handleDrop('acid', acids, ...arguments)">
                         <drag v-for="item in acids" class="drag" :key="item" :data-value="item"
                             :transfer-data="{ item: item, list: acids, example: 'lists' }">
-                            {{ item }}
-                        </drag>
-                    </drop>
-                </div>
-                <div class="col-md-4" id="salt">
-                    <h3>Tuz</h3>
-                    <drop class="drop list" @drop="handleDrop('salt',salts, ...arguments )">
-                        <drag v-for="item in salts" class="drag" :key="item" :data-value="item"
-                            :transfer-data="{ item: item, list: salts, example: 'lists' }">
                             {{ item }}
                         </drag>
                     </drop>
@@ -72,7 +60,6 @@
         },
         data() {
             return {
-                phValues: [1.2, 5.4, 7, 13.8, 7.5, 3, 9, 0, 4.3],
                 acids: [],
                 salts: [],
                 bases: [],
@@ -115,8 +102,13 @@
                     this.showAlert();
                 }
                 console.log(fromList, toList, type);
-            },
-        }
+            },       
+        },
+        computed: {
+            shuffledArray() {
+                return [1.2, 5.4, 13.8, 7.5, 3, 9, 0, 4.3].sort(() => Math.random() - 0.5);
+            }
+        },
     }
 </script>
 <style lang="scss">

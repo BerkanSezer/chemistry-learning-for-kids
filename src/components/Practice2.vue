@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container __practice2">
         <header>
             <h1>Etkinlik 2</h1>
             <span class="info">
@@ -13,10 +13,10 @@
             </div> -->
             <div class="col-md-12" style="padding: 0;">
                 <drop class="drop__menu" @drop="handleDrop('inventory', list, ...arguments)">
-                    <drag v-for="(item, index) in phValues" class="drag" :key="index" :data-value="index"
-                        :transfer-data="{ item: item, list: phValues, example: 'lists' }">
+                    <drag class="drag" :data-value="phIndex"
+                        :transfer-data="{ item: phValues[phIndex], list: phValues, example: 'lists' }">
                         <div class="bottle"></div>
-                        <span style="font-size: 12px;">{{ item.name }}</span>
+                        <span style="font-size: 12px;">{{ phValues[phIndex].name }}</span>
                     </drag>
                 </drop>
             </div>
@@ -97,30 +97,27 @@
                         value: 4.3
                     },
                 ],
-                acids: [],
-                salts: [],
-                bases: [],
-                phPageCounter: 1
+                phIndex: 0
             }
         },
     }
 </script>
 <style lang="scss">
-    body {
-        background: none;
-        background-color: black;
-    }
-
-    .bottle {
+    // body {
+    //     background: none;
+    //     background-color: black;
+    // }
+    .__practice2{
+        .bottle {
         background-image: url("/bottle.webp");
         background-size: cover;
         width: 60px;
         height: 60px;
-
-    }
-    .drag{
-        flex-direction: column;
-        background-color: transparent;
+        }
+        .drag{
+                flex-direction: column;
+                background-color: transparent;
+            }
     }
     #dropable-row{
         display: flex;
