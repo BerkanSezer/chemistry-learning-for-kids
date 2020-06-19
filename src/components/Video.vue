@@ -3,7 +3,12 @@
 </template>
 <script>
 export default {
-    name: 'Video'
+    name: 'Video',
+    created(){
+        // this.$store.state.canGoToNextPage = false;
+        this.$store.state.canGoToPreviousPage = false;
+        
+    }
 }
 </script>
 <style lang="scss" scoped>

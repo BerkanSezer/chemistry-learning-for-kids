@@ -46,45 +46,12 @@
         },
         data() {
             return {
-                solved: [],
-                items: [{
-                        name: "Hidroklorikasit",
-                        formula: "(HCL)",
-                        type: "acit",
-                        action: "Temas Halinde Deriyi Yakar",
-                    },
-                    {
-                        name: "Nitrikrasit",
-                        formula: "(HNO₃)",
-                        type: "acit",
-                        action: "Temas Halinde Deriyi Yakar",
-                    },
-                    {
-                        name: "Sülfürikasit",
-                        formula: "(H₂SO₄)",
-                        type: "acit",
-                        action: "Temas Halinde Deriyi Yakar",
-                    },
-                    {
-                        name: "Sodyumhidroksit",
-                        formula: "(NaOH)",
-                        type: "base",
-                        action: "Temas Halinde Kaşındırır",
-                    },
-                    {
-                        name: "Amonyak",
-                        formula: "(NH₃)",
-                        type: "base",
-                        action: "Temas Halinde Zehirler",
-                    },
-                    {
-                        name: "Sodyumkarbonat",
-                        formula: "(Na₂CO₃)",
-                        type: "base",
-                        action: "Temas Halinde Tahriş Eder",
-                    },
-                ]
+                solved: []
             }
+        },
+        created(){
+            this.$store.state.canGoToNextPage = false;
+            this.$store.state.canGoToPreviousPage = false;
         },
         methods: {
             waveHandler(state) {
@@ -98,15 +65,17 @@
             async handleDrop(toList, data) {
                 const isSuccess = await this.showAlert(data.item)
                 if (isSuccess) {
-                    toList.push(data.item);
+                    this.solved.push(data.item);
                     console.log(data);
                     document.querySelector(`#${data.item.name}`).style.display = 'block'
-                    // this.items.splice(this.items.indexOf(data.item), 1);
-                    
                     toList.sort((a, b) => a > b);
                 } else {
                     document.querySelector("#hand").classList.remove('wave');
                 }
+                if (this.solved.length === this.shuffledItems.length) {
+                    this.$store.state.canGoToNextPage = true;
+                }
+
 
             },
             async showAlert(item) {
@@ -157,7 +126,43 @@
         },
         computed: {
             shuffledItems() {
-                return this.items
+                return [{
+                        name: "Hidroklorikasit",
+                        formula: "(HCL)",
+                        type: "acit",
+                        action: "Temas Halinde Deriyi Yakar",
+                    },
+                    {
+                        name: "Nitrikrasit",
+                        formula: "(HNO₃)",
+                        type: "acit",
+                        action: "Temas Halinde Deriyi Yakar",
+                    },
+                    {
+                        name: "Sülfürikasit",
+                        formula: "(H₂SO₄)",
+                        type: "acit",
+                        action: "Temas Halinde Deriyi Yakar",
+                    },
+                    {
+                        name: "Sodyumhidroksit",
+                        formula: "(NaOH)",
+                        type: "base",
+                        action: "Temas Halinde Kaşındırır",
+                    },
+                    {
+                        name: "Amonyak",
+                        formula: "(NH₃)",
+                        type: "base",
+                        action: "Temas Halinde Zehirler",
+                    },
+                    {
+                        name: "Sodyumkarbonat",
+                        formula: "(Na₂CO₃)",
+                        type: "base",
+                        action: "Temas Halinde Tahriş Eder",
+                    },
+                ].sort(() => Math.random() - 0.5);
             }
         }
     }

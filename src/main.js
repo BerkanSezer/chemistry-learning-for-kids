@@ -9,7 +9,8 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
-
+      canGoToNextPage: true,
+      canGoToPreviousPage: false
   },
   mutations: {
 

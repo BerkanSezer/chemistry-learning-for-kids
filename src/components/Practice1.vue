@@ -67,7 +67,9 @@
             }
         },
         created(){
-            // this.showAlert();
+            this.$store.state.canGoToNextPage = false;
+            this.$store.state.canGoToPreviousPage = false;
+            
         },
         methods: {
             showAlert() {
@@ -98,10 +100,11 @@
                     fromList.splice(fromList.indexOf(data.item), 1);
                     toList.sort((a, b) => a > b);
                 }else{
-                    
                     this.showAlert();
                 }
-                console.log(fromList, toList, type);
+                if(this.shuffledArray.length === 0){
+                    this.$store.state.canGoToNextPage = true;
+                }
             },       
         },
         computed: {
