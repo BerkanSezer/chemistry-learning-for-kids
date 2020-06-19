@@ -6,9 +6,9 @@
         <Practice2 v-if="pageCounter === 4" />
         <Practice3 v-if="pageCounter === 5" />
         <footer>
-            <button class="btn btn__black" v-if="pageCounter > 1" @click="pageCounter --;">Geri</button>
-            <button class="btn btn__black" v-if="pageCounter < 5" @click="pageCounter ++;">İleri</button>
-            <button class="btn btn__black" v-if="pageCounter === 5" @click="finishApplication">Bitir</button>
+            <button class="btn btn__black" v-if="true" @click="pageCounter > 1 ? pageCounter -- : pageCounter = 1;">Geri</button>
+            <button class="btn btn__black" v-if="true" @click="pageCounter < 5 ? pageCounter ++ : finishApplication()">{{pageCounter === 5 ? 'Bitir' : 'İleri'}}</button>
+            <!-- <button class="btn btn__black" v-if="pageCounter === 5" @click="">Bitir</button> -->
         </footer>
     </div>
 </template>

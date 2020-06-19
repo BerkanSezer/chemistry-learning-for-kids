@@ -120,6 +120,11 @@
         overflow: hidden;
         background-repeat: no-repeat;
     }
+    .btn.disabled, .btn:disabled{
+        opacity: 0.65;
+        background: red;
+        cursor: not-allowed;
+    }
 </style>
 <style lang="scss">
     @import '../assets/scss/main';

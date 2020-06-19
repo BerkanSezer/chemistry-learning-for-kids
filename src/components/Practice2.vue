@@ -12,14 +12,17 @@
                 <drop class="drop__menu" @drop="handleDrop(list, ...arguments)" drop-effect="copy">
                     <drag class="drag" :data-value="shuffledItems" v-for="(item, index) in shuffledItems" :key="index"
                         :transfer-data="{ item: item, list: shuffledItems, example: 'lists' }" drop-effect="copy">
+                        <BIconCheck2Circle class="check-icon" :id="item.name"/>
                         <img src="/bottle.webp" alt="Chemical Icon" width="100">
-                        <span style="font-size: 12px;">{{item.name }}<br>{{item.formula}}</span>
+                        <span style="font-size: 12px;">{{item.name}}</span>
+                        <span>{{item.formula}}</span>
+                        
                     </drag>
                 </drop>
             </div>
             <div class="col-md-12" id="dropable-row">
                 <drop class="drop list" @drop="handleDrop(solved, ...arguments)" drop-effect="copy"
-                    @dragenter="waveHandler(...arguments, true)" @dragleave="waveHandler(...arguments, false)">
+                    @dragenter="waveHandler(true)" @dragleave="waveHandler(false)">
                     <img src="/hand.png" alt="Hand Icon" width="300" id="hand">
                 </drop>
             </div>
@@ -33,11 +36,13 @@
         Drag,
         Drop
     } from 'vue-drag-drop';
+    import {BIconCheck2Circle} from 'bootstrap-vue';
     export default {
         name: 'Practice2',
         components: {
             Drag,
             Drop,
+            BIconCheck2Circle
         },
         data() {
             return {
@@ -46,35 +51,35 @@
                         name: "Hidroklorikasit",
                         formula: "(HCL)",
                         type: "acit",
-                        action: "Temas Halinde Deriyi Yakar.",
+                        action: "Temas Halinde Deriyi Yakar",
                     },
                     {
                         name: "Nitrikrasit",
-                        formula: "(HNO3)",
+                        formula: "(HNO₃)",
                         type: "acit",
-                        action: "Temas Halinde Deriyi Yakar.",
+                        action: "Temas Halinde Deriyi Yakar",
                     },
                     {
                         name: "Sülfürikasit",
-                        formula: "(H2SO4)",
+                        formula: "(H₂SO₄)",
                         type: "acit",
-                        action: "Temas Halinde Deriyi Yakar.",
+                        action: "Temas Halinde Deriyi Yakar",
                     },
                     {
                         name: "Sodyumhidroksit",
                         formula: "(NaOH)",
                         type: "base",
-                        action: "Temas Halinde Kaşındırır.",
+                        action: "Temas Halinde Kaşındırır",
                     },
                     {
                         name: "Amonyak",
-                        formula: "(NH3)",
+                        formula: "(NH₃)",
                         type: "base",
-                        action: "Temas Halinde Zehirler.",
+                        action: "Temas Halinde Zehirler",
                     },
                     {
                         name: "Sodyumkarbonat",
-                        formula: "(Na2CO3)",
+                        formula: "(Na₂CO₃)",
                         type: "base",
                         action: "Temas Halinde Tahriş Eder",
                     },
@@ -82,9 +87,7 @@
             }
         },
         methods: {
-            waveHandler(list, event, state) {
-                console.log(event.target);
-
+            waveHandler(state) {
                 if (state) {
                     event.target.classList.add('wave');
                 } else {
@@ -96,8 +99,12 @@
                 const isSuccess = await this.showAlert(data.item)
                 if (isSuccess) {
                     toList.push(data.item);
-                    this.items.splice(this.items.indexOf(data.item), 1);
+                    console.log(data);
+                    document.querySelector(`#${data.item.name}`).style.display = 'block'
+                    // this.items.splice(this.items.indexOf(data.item), 1);
+                    
                     toList.sort((a, b) => a > b);
+                } else {
                     document.querySelector("#hand").classList.remove('wave');
                 }
 
@@ -118,8 +125,8 @@
                     confirmButtonText: 'Asit',
                     cancelButtonText: 'Baz',
                 }).then(async res => {
-                    console.log(res);
                     const type = res.value ? 'acit' : res.dismiss === 'cancel' ? 'base' : null;
+
                     if (type === null) return false;
                     if (type === item.type) {
                         this.$swal({
@@ -128,10 +135,12 @@
                             icon: 'success',
                             title: 'Tebrikler! Doğru Cevap',
                             showConfirmButton: false,
-                            timer: 1000
+                            timer: 1200
                         })
+                        document.querySelector("#hand").classList.remove('wave');
                         return true
                     }
+                    document.querySelector("#hand").classList.remove('wave');
                     this.$swal({
                         toast: false,
                         position: 'center',
@@ -193,6 +202,12 @@
             justify-content: space-between;
             height: 200px;
             margin-top: 30px;
+        }
+        .check-icon{
+            display: none;
+            position: absolute;
+            font-size: 90px;
+            color: var(--green),
         }
     }
 
