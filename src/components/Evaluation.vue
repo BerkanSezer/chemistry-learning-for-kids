@@ -1,11 +1,11 @@
 <template>
     <div class="container" id="evaluation">
         <header>
-            <h1>Etkinlik 1</h1>
-            <span class="info">
+            <h1>Değerlendirme</h1>
+            <!-- <span class="info">
                 <BIconInfoCircle />
                 Bu etkinlikte aşağıdaki pH değerkerini uygun maddelere göre yerleştiriniz.
-            </span>
+            </span> -->
         </header>
         <div>
 
@@ -22,21 +22,14 @@
                         <div class="questionContainer" v-if="questionIndex<questions.length" v-bind:key="questionIndex">
 
                             <header>
-                                <h1 class="title is-6">VueQuiz</h1>
-
                                 <div class="progressContainer">
                                     <progress class="progress is-info is-small"
                                         :value="(questionIndex/questions.length)*100"
                                         max="100">{{(questionIndex/questions.length)*100}}%</progress>
-                                    <p>{{(questionIndex/questions.length)*100}}% complete</p>
+                                    <p>{{(questionIndex/questions.length)*100}}% tamamlandı</p>
                                 </div>
-
                             </header>
-
-
-                            <h2 class="titleContainer title">{{ questions[questionIndex].text }}</h2>
-
-
+                            <h3 class="titleContainer title">{{ questions[questionIndex].text }}</h3>
                             <div class="optionContainer">
                                 <div class="option" v-for="(response, index) in questions[questionIndex].responses"
                                     @click="selectOption(index)"
@@ -45,10 +38,7 @@
                                 </div>
                             </div>
                             <footer class="questionFooter">
-
-
                                 <nav class="pagination" role="navigation" aria-label="pagination">
-
                                     <a class="button" v-on:click="prev();" :disabled="questionIndex < 1">
                                         Geri
                                     </a>
@@ -56,45 +46,26 @@
                                         v-on:click="next();" :disabled="questionIndex>=questions.length">
                                         {{ (userResponses[questionIndex]==null)?'Atla':'İleri' }}
                                     </a>
-
                                 </nav>
-
-
                             </footer>
-
-
                         </div>
-
-
-
                         <div v-if="questionIndex >= questions.length" v-bind:key="questionIndex"
                             class="quizCompleted has-text-centered">
-
                             <span class="icon">
                                 <i class="fa" :class="score()>3?'fa-check-circle-o is-active':'fa-times-circle'"></i>
                             </span>
-
-
                             <h2 class="title">
-                                You did {{ (score()>7?'an amazing':(score() &lt; 4 ?'a poor':'a good')) }} job!
+                                {{getScoreMessage()}}
                             </h2>
                             <p class="subtitle">
-                                Total score: {{ score() }} / {{ questions.length }}
+                                Sonuç: {{ score() }} / {{ questions.length }}
                             </p>
                             <br>
-                            <a class="button" @click="restart()">restart <i class="fa fa-refresh"></i></a>
-
-
+                            <a class="button" @click="restart()">Yeniden Dene <i class="fa fa-refresh"></i></a>
                         </div>
-
-
                     </transition>
-
                 </div>
-
-
             </section>
-
         </div>
     </div>
 </template>
@@ -276,6 +247,7 @@
                         ]
                     }
                 ],
+
                 questionIndex: 0,
                 userResponses: Array(10).fill(null),
                 isActive: false
@@ -296,7 +268,7 @@
             },
 
             prev: function () {
-                if (this.questions.length > 0) this.questionIndex--;
+                if (this.questions.length > 0 && this.questionIndex > 0) this.questionIndex--;
             },
             // Return "true" count in userResponses
             score: function () {
@@ -312,8 +284,17 @@
                     }
                 }
                 return score;
-
-                //return this.userResponses.filter(function(val) { return val }).length;
+            },
+            getScoreMessage(){
+                if(this.score() == 10){
+                    return "Vay canına! Sen resmen bir kimyacısın. Asitler ve bazlar senden sorulur."
+                }else if(this.score() > 7){
+                    return "Muhteşem bir iş çıkattın!"
+                }else if(this.score() > 5){
+                    return "Kötü değil ama biraz daha çalışman lazım!"
+                }else{
+                    return "Dersi yeniden tekrar etmeye ne dersin? Bence daha iyisini yapabiliriz"
+                }
             }
         },
         filters: {
@@ -331,26 +312,18 @@
     .container#evaluation {
         $trans_duration: 0.3s;
         $primary_color: #3D5AFE;
-
+        // color: black;
         @import url("https://fonts.googleapis.com/css?family=Montserrat:400,400i,700");
         @import url("https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700");
 
         body {
             font-family: "Open Sans", sans-serif;
             font-size: 14px;
-
             height: 100vh;
-
             background: #CFD8DC;
-
-            /* mocking native UI */
             cursor: default !important;
-            /* remove text selection cursor */
             user-select: none;
-            /* remove text selection */
             user-drag: none;
-            /* disbale element dragging */
-
             display: flex;
             align-items: center;
             justify-content: center;
@@ -365,6 +338,9 @@
             font-family: Montserrat, sans-serif;
             font-weight: normal;
         }
+        .subtitle{
+            margin-top: 20px;
+        }
 
         .animated {
             transition-duration: $trans_duration/2;
@@ -375,12 +351,14 @@
         }
 
         .questionBox {
+            user-select: none;
+            margin-top: 20px;
+            border: 3px solid white;
+            // max-width: 30rem;
+            // width: 30rem;
+            min-height: 40rem;
 
-            max-width: 30rem;
-            width: 30rem;
-            min-height: 30rem;
-
-            background: #FAFAFA;
+            background: #023c4c;
             position: relative;
             display: flex;
 
@@ -400,10 +378,10 @@
                 }
 
                 .progressContainer {
-                    width: 60%;
                     margin: 0 auto;
 
                     >progress {
+                        width: 100%;
                         margin: 0;
                         border-radius: 5rem;
                         overflow: hidden;
@@ -428,6 +406,7 @@
             }
 
             .titleContainer {
+                font-weight: bold;
                 text-align: center;
                 margin: 0 auto;
                 padding: 1.5rem;
@@ -478,23 +457,25 @@
                     flex-grow: 1;
 
                     .option {
+                        font-size: 20px;
+                        text-align: left;
                         border-radius: 290486px;
-                        padding: 9px 18px;
+                        padding: 15px 18px;
                         margin: 0 18px;
-                        margin-bottom: 12px;
+                        margin-bottom: 20px;
                         transition: $trans_duration;
                         cursor: pointer;
                         background-color: rgba(0, 0, 0, 0.05);
-                        color: rgba(0, 0, 0, 0.85);
-                        border: transparent 1px solid;
+                        color: white;
+                        border: white 1px solid;
 
                         &.is-selected {
-                            border-color: rgba(black, 0.25);
-                            background-color: white;
+                            border-color: var(--info);
+                            background-color: var(--info);
                         }
 
                         &:hover {
-                            background-color: rgba(0, 0, 0, 0.1);
+                            background-color: rgba(255, 193, 7, 0.73);
                         }
 
                         &:active {
@@ -512,6 +493,14 @@
                     .pagination {
                         //padding: 10px 15px;
                         margin: 15px 25px;
+                        a.button{
+                            background-color: var(--green);
+                            border: 1px solid transparent;
+                            &:hover{
+                                border-color: white;   
+                                background-color: #0a9028;
+                            }
+                        }
                     }
                 }
             }
@@ -532,7 +521,8 @@
 
             &:hover {
                 cursor: pointer;
-                background: #ECEFF1;
+                // background: #ECEFF1;
+                background-color: #0a9028;
                 border-color: rgba(0, 0, 0, 0.25);
             }
 
