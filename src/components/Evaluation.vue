@@ -19,8 +19,7 @@
                         leave-active-class="animated zoomOut" mode="out-in">
 
 
-                        <div class="questionContainer" v-if="questionIndex<questions.length" v-bind:key="questionIndex">
-
+                        <div class="questionContainer" v-if="questionIndex<questions.length" :key="questionIndex">
                             <header>
                                 <div class="progressContainer">
                                     <progress class="progress is-info is-small"
@@ -44,12 +43,13 @@
                                     </button>
                                     <button class="button"
                                         :class="(userResponses[questionIndex]==null)?'disabled':'is-active'"
-                                        v-on:click="next();" :disabled="questionIndex>=questions.length">İleri
+                                        v-on:click="next();" :disabled="questionIndex>=questions.length">
+                                        {{questionIndex === questions.length - 1 ? 'Bitir' : 'İleri'}}
                                     </button>
                                 </nav>
                             </footer>
                         </div>
-                        <div v-if="questionIndex >= questions.length" v-bind:key="questionIndex"
+                        <div v-else :key="questionIndex"
                             class="quizCompleted has-text-centered">
                             <span class="icon">
                                 <i class="fa" :class="score()>3?'fa-check-circle-o is-active':'fa-times-circle'"></i>
@@ -59,6 +59,11 @@
                             </h2>
                             <p class="subtitle">
                                 Sonuç: {{ score() }} / {{ questions.length }}
+                            </p>
+
+                            <p class="subtitle" v-if="wrongAnswers.length">
+                                Yanlış cevaplanmış sorular:<br>
+                                <span v-for="(wrong, index) in wrongAnswers" :key="wrong">{{wrong}} {{index !== wrongAnswers.length - 1 ? ' - ': ''}}</span>
                             </p>
                             <br>
                             <a class="button" @click="restart()">Yeniden Dene <i class="fa fa-refresh"></i></a>
@@ -250,7 +255,8 @@
 
                 questionIndex: 0,
                 userResponses: Array(10).fill(null),
-                isActive: false
+                isActive: false,
+                wrongAnswers: []
             }
         },
         methods: {
@@ -260,15 +266,12 @@
             },
             selectOption: function (index) {
                 this.$set(this.userResponses, this.questionIndex, index);
-                //console.log(this.userResponses);
             },
             next() {
                 if (this.userResponses[this.questionIndex] === null) {
                     this.$swal('Soruyu boş geçemezsin. Lütfen Bir cevap seç');
                     return;
                 }
-                
-                console.log(this.userResponses);
                 if (this.questionIndex < this.questions.length)
                     this.questionIndex++;
             },
@@ -276,19 +279,21 @@
             prev: function () {
                 if (this.questions.length > 0 && this.questionIndex > 0) this.questionIndex--;
             },
+
             // Return "true" count in userResponses
             score: function () {
                 var score = 0;
+
                 for (let i = 0; i < this.userResponses.length; i++) {
-                    if (
-                        typeof this.questions[i].responses[
-                            this.userResponses[i]
-                        ] !== "undefined" &&
-                        this.questions[i].responses[this.userResponses[i]].correct
-                    ) {
-                        score = score + 1;
+                    if(typeof this.questions[i].responses[this.userResponses[i]] !== "undefined"){
+                        if (this.questions[i].responses[this.userResponses[i]].correct) {
+                            score++;
+                        }else{
+                            this.wrongAnswers.indexOf(i + 1) === -1 ? this.wrongAnswers.push(i + 1) : null;
+                        }
                     }
                 }
+                console.log(this.wrongAnswers);
                 return score;
             },
             getScoreMessage() {
@@ -417,6 +422,7 @@
                 text-align: center;
                 margin: 0 auto;
                 padding: 1.5rem;
+                font-size: 25px;
 
             }
 
