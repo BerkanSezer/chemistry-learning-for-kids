@@ -17,7 +17,7 @@
                 </drop>
             </div>
             <div class="row" id="dropable-row">
-                <div class="col-md-4" id="acid">
+                <div class="col-md-6" id="acid">
                     <h3>Asit</h3>
                     <drop class="drop list" @drop="handleDrop('acid', acids, ...arguments)">
                         <drag v-for="item in acids" class="drag" :key="item" :data-value="item"
@@ -26,7 +26,7 @@
                         </drag>
                     </drop>
                 </div>
-                <div class="col-md-4" id="base">
+                <div class="col-md-6" id="base">
                     <h3>Baz</h3>
                     <drop class="drop list" @drop="handleDrop('base', bases, ...arguments)">
                         <drag v-for="item in bases" class="drag" :key="item" :data-value="item"
@@ -74,7 +74,7 @@
         methods: {
             showAlert() {
             // Use sweetalert2
-                this.$swal('Hello Vue world!!!');
+                this.$swal('Seçimin yanlış, lütfen yeniden dene!');
             },
             handleDrop(type = null, toList, data) {
                 const fromList = data.list;
@@ -123,10 +123,31 @@
         overflow: hidden;
         background-repeat: no-repeat;
     }
+    .btn{
+        > .error-message{
+            display: none;
+            position: absolute;
+            top: -64px;
+            font-size: 13px;
+            color: black;
+            background: white;
+            padding: 10px;
+            border-radius: 7px;
+            right: 0;
+            width: 210px;
+            font-weight: bold;
+        }
+    }
     .btn.disabled, .btn:disabled{
-        opacity: 0.65;
         background: red;
         cursor: not-allowed;
+        position: relative;
+        
+        &:hover{
+            .error-message{
+                display: block;
+            }
+        }
     }
 </style>
 <style lang="scss">
@@ -151,7 +172,7 @@
             > .list{
                 background-color: $pink;
                 width: 100%;
-                height: 60vh;
+                height: 42vh;
             }
         }
         #base{
@@ -161,7 +182,7 @@
             > .list{
                 background-color: $cyan;
                 width: 100%;
-                height: 60vh;
+                height: 42vh;
             }
         }
         .list{
@@ -185,7 +206,7 @@
         width: 89px;
         height: 89px;
         border-radius: 5px;
-        background-color: $purple;
+        background-color: #36c6b9;
         color: white;
         @include centerFlex;
         margin-right: 20px;

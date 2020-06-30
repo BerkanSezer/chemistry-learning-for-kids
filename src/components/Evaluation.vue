@@ -39,13 +39,13 @@
                             </div>
                             <footer class="questionFooter">
                                 <nav class="pagination" role="navigation" aria-label="pagination">
-                                    <a class="button" v-on:click="prev();" :disabled="questionIndex < 1">
+                                    <button class="button" v-on:click="prev();" :disabled="questionIndex < 1">
                                         Geri
-                                    </a>
-                                    <a class="button" :class="(userResponses[questionIndex]==null)?'':'is-active'"
-                                        v-on:click="next();" :disabled="questionIndex>=questions.length">
-                                        {{ (userResponses[questionIndex]==null)?'Atla':'İleri' }}
-                                    </a>
+                                    </button>
+                                    <button class="button"
+                                        :class="(userResponses[questionIndex]==null)?'disabled':'is-active'"
+                                        v-on:click="next();" :disabled="questionIndex>=questions.length">İleri
+                                    </button>
                                 </nav>
                             </footer>
                         </div>
@@ -262,7 +262,13 @@
                 this.$set(this.userResponses, this.questionIndex, index);
                 //console.log(this.userResponses);
             },
-            next: function () {
+            next() {
+                if (this.userResponses[this.questionIndex] === null) {
+                    this.$swal('Soruyu boş geçemezsin. Lütfen Bir cevap seç');
+                    return;
+                }
+                
+                console.log(this.userResponses);
                 if (this.questionIndex < this.questions.length)
                     this.questionIndex++;
             },
@@ -285,14 +291,14 @@
                 }
                 return score;
             },
-            getScoreMessage(){
-                if(this.score() == 10){
+            getScoreMessage() {
+                if (this.score() == 10) {
                     return "Vay canına! Sen resmen bir kimyacısın. Asitler ve bazlar senden sorulur."
-                }else if(this.score() > 7){
+                } else if (this.score() > 7) {
                     return "Muhteşem bir iş çıkattın!"
-                }else if(this.score() > 5){
+                } else if (this.score() > 5) {
                     return "Kötü değil ama biraz daha çalışman lazım!"
-                }else{
+                } else {
                     return "Dersi yeniden tekrar etmeye ne dersin? Bence daha iyisini yapabiliriz"
                 }
             }
@@ -338,7 +344,8 @@
             font-family: Montserrat, sans-serif;
             font-weight: normal;
         }
-        .subtitle{
+
+        .subtitle {
             margin-top: 20px;
         }
 
@@ -493,12 +500,18 @@
                     .pagination {
                         //padding: 10px 15px;
                         margin: 15px 25px;
-                        a.button{
+
+                        button.button {
+                            outline:none;
                             background-color: var(--green);
                             border: 1px solid transparent;
-                            &:hover{
-                                border-color: white;   
+                            color: white;
+                            &:hover {
+                                border-color: white;
                                 background-color: #0a9028;
+                            }
+                            &.disabled {
+                                background: red;
                             }
                         }
                     }

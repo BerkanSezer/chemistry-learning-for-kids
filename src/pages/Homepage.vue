@@ -8,8 +8,14 @@
         <Evaluation v-if="pageCounter === 6" />
         <footer>
             <!-- :disabled="!$store.state.canGoToPreviousPage" -->
-            <button :class="{btn: true, btn__black: true}"  @click="pageCounter > 1 ? pageCounter -- : pageCounter = 1;">Geri</button>
-            <button :class="{btn: true, btn__black: true}" :disabled="!$store.state.canGoToNextPage" @click="pageCounter < 6 ? pageCounter ++ : finishApplication()">{{pageCounter === 6 ? 'Bitir' : 'İleri'}}</button>
+            <button v-if="pageCounter < 6" :class="{btn: true, btn__black: true}"  @click="pageCounter > 1 ? pageCounter -- : pageCounter = 1;">Geri</button>
+            <button v-if="pageCounter < 6" :class="{btn: true, btn__black: true}" 
+                :disabled="!$store.state.canGoToNextPage" 
+                @click="pageCounter < 6 ? pageCounter ++ : finishApplication()"
+            >
+                <span class="error-message">Devam edebilmek için etkinliği tamamlamanız gerekmektedir.</span>
+                <span>İleri</span>
+                </button>
             <!-- <button class="btn btn__black" v-if="pageCounter === 5" @click="">Bitir</button> -->
         </footer>
     </div>

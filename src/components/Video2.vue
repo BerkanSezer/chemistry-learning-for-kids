@@ -25,10 +25,10 @@
     }
 </script>
 <style lang="scss" scoped>
-    iframe {
+    iframe{
         height: 45vw;
         width: 80vw;
-        max-width: 1100px;
-        max-height: 619px;
+        max-width: 800px;
+        max-height: 450px;
     }
 </style>

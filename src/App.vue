@@ -7,8 +7,7 @@
 <script>
   export default {
     name: 'App',
-    components: {
-    }
+    components: {}
   }
 </script>
 
@@ -36,7 +35,8 @@
         display: flex;
         align-items: flex-start;
         flex-direction: column;
-        .info{
+
+        .info {
           background-color: #007bff;
           padding: 10px;
           border-radius: 4px;
@@ -57,15 +57,23 @@
       width: 100px;
       height: 50px;
       border-radius: 5px;
-      background-color: black;
+      background-color: var(--green);
       color: white;
       font-size: 20px;
       border: 1px solid white;
 
       &:hover {
-        background-color: #484848;
+        background-color: #15742a;
         color: white;
       }
+    }
+  }
+</style>
+<!-- Bootstrap Overide -->
+<style lang="scss">
+  @media (min-width: 1200px) {
+    .container {
+      max-width: 830px;
     }
   }
 </style>
