@@ -1,5 +1,7 @@
 <template>
-    <div style="margin-top: 100px">Merhaba, Bu etkinlikte sana asit ve bazlari anlatacagiz</div>
+    <div style="margin-top: 100px">
+        <img src="/intro.jpg" alt="" id="intro">
+    </div>
 </template>
 <script>
 export default {
@@ -7,5 +9,10 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-    
+    #intro{
+        height: 45vw;
+        width: 80vw;
+        max-width: 800px;
+        max-height: 450px;
+    }
 </style>
